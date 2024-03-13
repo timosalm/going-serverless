@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.hibernate.orm' version '6.4.4.Final'
+	id 'org.hibernate.orm' version '6.4.2.Final' // https://github.com/spring-projects/spring-framework/issues/32311
 	id 'org.graalvm.buildtools.native' version '0.9.28'
 }
 
@@ -32,7 +32,7 @@ tasks.named('test') {
 }
 
 tasks.named('jar') {
-	enabled = false
+	enabled = false // disable plain archive, otherwise native image build wild fail with "Error: /workspace is a directory. (-jar requires a valid jarfile)"
 }
 
 hibernate {
