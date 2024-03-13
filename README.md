@@ -9,12 +9,11 @@ export REGISTRY_HOST=harbor.main.emea.end2end.link/going-serverless
 
 ```
 docker build . -t $REGISTRY_HOST/inclusion-crac:checkpointer --file crac/Dockerfile
-docker buildx build . -t $REGISTRY_HOST/inclusion-crac:checkpointer --file crac/Dockerfile --platform linux/amd64 --load # Mac with ARM processor
 docker run --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --volume $PWD/crac-files:/opt/crac-files -p 8080:8080 --rm --name inclusion-crac-checkpointer $REGISTRY_HOST/inclusion-crac:checkpointer
-docker run --privileged --volume $PWD/crac-files:/opt/crac-files -p 8080:8080 --rm --name inclusion-crac-checkpointer $REGISTRY_HOST/inclusion-crac:checkpointer # Run container in privileged mode if CAP_CHECKPOINT_RESTORE capability is not available (since Linux 5.9)
+# Wait until checkpoint creation succeeded
+docker commit --change='ENTRYPOINT ["/opt/app/entrypoint.sh"]' $(docker ps -qf "name=inclusion-crac-checkpointer") $REGISTRY_HOST/inclusion-crac
+docker kill $(docker ps -qf "name=inclusion-crac-checkpointer")
 ```
-
-
 
 ## Container image building with kpack
 

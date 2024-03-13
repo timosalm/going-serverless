@@ -15,6 +15,7 @@ if [ -z "$(ls -A $CRAC_FILES_DIR)" ]; then
   if ([ -f $CRAC_FILES_DIR/dump4.log ]) && (grep -Fq "Dumping finished successfully" "$CRAC_FILES_DIR/dump4.log")
   then
     echo Checkpoint creation succeeded
+    sleep infinity
   else
     echo Checkpoint creation failed
   fi
