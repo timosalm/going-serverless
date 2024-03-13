@@ -1,11 +1,11 @@
-FROM azul/zulu-openjdk:17-jdk as builder
+FROM azul/zulu-openjdk:17 as builder
 
 COPY ./build.gradle ./gradlew ./settings.gradle .
 COPY ./gradle ./gradle
 COPY ./src ./src
 RUN ./gradlew assemble
 
-FROM azul/zulu-openjdk:17-jdk as cds-archive
+FROM azul/zulu-openjdk:17 as cds-archive
 
 ENV APP_JAR_FILE /opt/app/app.jar
 
@@ -18,7 +18,7 @@ COPY ./cds/unpack-executable-jar.sh /opt/app/unpack-executable-jar.sh
 
 ENTRYPOINT /opt/app/cds.sh -b
 
-FROM azul/zulu-openjdk:17-jdk
+FROM azul/zulu-openjdk:17
 
 COPY --from=cds-archive /opt/app/unpacked /opt/app/unpacked
 COPY --from=cds-archive /opt/app/cds.sh /opt/app/cds.sh
