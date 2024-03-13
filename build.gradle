@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.hibernate.orm' version '6.4.2.Final' // https://github.com/spring-projects/spring-framework/issues/32311
 	id 'org.graalvm.buildtools.native' version '0.9.28'
 }
 
@@ -19,12 +18,8 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.crac:crac'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -34,11 +29,5 @@ tasks.named('test') {
 
 tasks.named('jar') {
 	enabled = false // disable plain archive, otherwise native image build wild fail with "Error: /workspace is a directory. (-jar requires a valid jarfile)"
-}
-
-hibernate {
-	enhancement {
-		enableAssociationManagement = true
-	}
 }
 

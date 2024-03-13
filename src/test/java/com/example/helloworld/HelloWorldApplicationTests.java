@@ -1,10 +1,10 @@
-package com.example.inclusion;
+package com.example.helloworld;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class InclusionApplicationTests {
+class HelloWorldApplicationTests {
 
 	@Test
 	void contextLoads() {

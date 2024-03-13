@@ -9,7 +9,7 @@ if [ -z "$(ls -A $CRAC_FILES_DIR)" ]; then
   java -XX:CRaCCheckpointTo=$CRAC_FILES_DIR -jar  $APP_JAR_FILE&
   sleep 30
 
-  siege -c 1 -r 10 -b http://localhost:8080/api/v1/emojis
+  siege -c 1 -r 10 -b http://localhost:8080
 
   jcmd $APP_JAR_FILE JDK.checkpoint
 

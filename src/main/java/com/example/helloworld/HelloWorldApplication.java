@@ -1,13 +1,13 @@
-package com.example.inclusion;
+package com.example.helloworld;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class InclusionApplication {
+public class HelloWorldApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(InclusionApplication.class, args);
+		SpringApplication.run(HelloWorldApplication.class, args);
 	}
 
 }
