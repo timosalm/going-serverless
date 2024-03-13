@@ -17,7 +17,7 @@ COPY --from=builder build/libs/*.jar $APP_JAR_FILE
 COPY ./cds/cds.sh /opt/app/cds.sh
 COPY ./cds/unpack-executable-jar.sh /opt/app/unpack-executable-jar.sh
 
-ENTRYPOINT /opt/app/cds.sh -b
+RUN /opt/app/cds.sh -b
 
 FROM azul/zulu-openjdk:17
 
