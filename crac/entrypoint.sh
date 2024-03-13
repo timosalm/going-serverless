@@ -23,5 +23,5 @@ if [ -z "$(ls -A $CRAC_FILES_DIR)" ]; then
     echo Checkpoint creation failed
   fi
 else
-  java -XX:CRaCRestoreFrom=$CRAC_FILES_DIR
+  java -XX:CRaCRestoreFrom=$CRAC_FILES_DIR -XX:+UnlockExperimentalVMOptions -XX:+IgnoreCPUFeatures
 fi
