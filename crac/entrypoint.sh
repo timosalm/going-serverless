@@ -1,6 +1,9 @@
 #!/bin/bash
 set -x
 
+CRAC_FILES_DIR=`eval echo ${CRAC_FILES_DIR}`
+mkdir -p $CRAC_FILES_DIR
+
 if [ -z "$(ls -A $CRAC_FILES_DIR)" ]; then
   ( echo 128 > /proc/sys/kernel/ns_last_pid ) 2>/dev/null || while [ $(cat /proc/sys/kernel/ns_last_pid) -lt 128 ]; do :; done
   java -XX:CRaCCheckpointTo=$CRAC_FILES_DIR -jar  $APP_JAR_FILE&
