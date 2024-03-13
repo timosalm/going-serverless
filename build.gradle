@@ -31,6 +31,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.named('jar') {
+	enabled = false
+}
+
 hibernate {
 	enhancement {
 		enableAssociationManagement = true
