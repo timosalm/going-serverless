@@ -10,12 +10,13 @@ set -e
 # Change JAVA_OPTS to "" to not use Spring AOT optimizations
 # JAVA_OPTS="-Dspring.aot.enabled=true"
 
-UNPACKED_DIR=$(echo "${APP_JAR_FILE%/*}/unpacked")
+APP_DIR=$(echo "${APP_JAR_FILE%/*}")
+UNPACKED_DIR=$APP_DIR/unpacked
 
 if [[ $1 != "-s" ]]; then
 
   # Unpack the Spring Boot executable JAR in a way suitable for optimal performances with AppCDS
-  ./unpack-executable-jar.sh -d $UNPACKED_DIR $APP_JAR_FILE
+  eval ".$APP_DIR/unpack-executable-jar.sh -d $UNPACKED_DIR $APP_JAR_FILE"
 
   # AppCDS training run
   java -Dspring.context.exit=onRefresh -XX:ArchiveClassesAtExit=$UNPACKED_DIR/application.jsa -jar $UNPACKED_DIR/run-app.jar
