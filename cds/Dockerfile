@@ -9,7 +9,8 @@ FROM azul/zulu-openjdk:17 as cds-archive
 
 ENV APP_JAR_FILE /opt/app/app.jar
 
-RUN apt-get install --no-install-recommends -y unzip
+RUN apt-get update && apt-get install -y \
+         unzip
 
 RUN mkdir -p /opt/app
 COPY --from=builder build/libs/*.jar $APP_JAR_FILE
