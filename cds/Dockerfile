@@ -21,8 +21,9 @@ RUN /opt/app/cds.sh -b
 
 FROM azul/zulu-openjdk:17
 
+ENV APP_JAR_FILE /opt/app/app.jar
+
 COPY --from=cds-archive /opt/app/unpacked /opt/app/unpacked
 COPY --from=cds-archive /opt/app/cds.sh /opt/app/cds.sh
 
-WORKDIR /data
-ENTRYPOINT ./cds.sh -s
+ENTRYPOINT /opt/app/cds.sh -s

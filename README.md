@@ -34,7 +34,6 @@ docker build . -t $REGISTRY_HOST/hello-world-cds --file cds/Dockerfile
 docker push $REGISTRY_HOST/hello-world-cds
 ```
 
-
 ## Container image building with kpack
 
 ### Without optimizations
@@ -82,4 +81,16 @@ hey -n 1000 -c 1000 -m GET $(kn service describe hello-world-crac -o url)
 kubectl top pods -l app=hello-world-crac-00001 --containers
 # POD                                                  NAME             CPU(cores)   MEMORY(bytes)
 # hello-world-crac-00001-deployment-5d48647675-c7qs4   user-container   2m           38Mi
+```
+
+### CDS
+```
+kn service create hello-world-cds --image $REGISTRY_HOST/hello-world-cds
+kubectl logs -l app=hello-world-cds-00001 -c user-container | grep "Started HelloWorldApplication"
+# Started HelloWorldApplication in 0.238 seconds (process running for 0.247)
+watch kubectl get pods
+hey -n 1000 -c 1000 -m GET $(kn service describe hello-world-cds -o url)
+kubectl top pods -l app=hello-world-cds-00001 --containers
+# POD                                                 NAME             CPU(cores)   MEMORY(bytes)
+# hello-world-cds-00001-deployment-5959fc77fd-pbfxv   user-container   1m           40Mi
 ```
