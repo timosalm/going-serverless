@@ -87,10 +87,42 @@ kubectl top pods -l app=hello-world-crac-00001 --containers
 ```
 kn service create hello-world-cds --image $REGISTRY_HOST/hello-world-cds
 kubectl logs -l app=hello-world-cds-00001 -c user-container | grep "Started HelloWorldApplication"
-# Started HelloWorldApplication in 0.238 seconds (process running for 0.247)
+# Started HelloWorldApplication in 2.769 seconds
 watch kubectl get pods
 hey -n 1000 -c 1000 -m GET $(kn service describe hello-world-cds -o url)
 kubectl top pods -l app=hello-world-cds-00001 --containers
 # POD                                                 NAME             CPU(cores)   MEMORY(bytes)
-# hello-world-cds-00001-deployment-5959fc77fd-pbfxv   user-container   1m           40Mi
+# hello-world-cds-00001-deployment-5fb784757f-vtzdh   user-container   2m           10Mi
+```
+
+## Running the application on Azure Container Apps
+### Without optimizations
+```
+az containerapp up --name hello-world --image harbor.main.emea.end2end.link/going-serverless/hello-world --ingress external --target-port 8080
+az containerapp logs show -n hello-world -g DefaultResourceGroup-DEWC | grep "Started HelloWorldApplication"
+watch az containerapp replica list -n hello-world -g DefaultResourceGroup-DEWC --query "[].[name,properties.runningState]"
+hey -n 1000 -c 1000 -m GET $(echo "https://$(az containerapp show -n hello-world -g DefaultResourceGroup-DEWC --query properties.configuration.ingress.fqdn --only-show-errors -o yaml)")
+
+```
+### GraalVM Native Image
+```
+az containerapp up --name hello-world-native --image harbor.main.emea.end2end.link/going-serverless/hello-world-native --ingress external --target-port 8080
+az containerapp logs show -n hello-world-native -g DefaultResourceGroup-DEWC | grep "Started HelloWorldApplication"
+watch az containerapp replica list -n hello-world-native -g DefaultResourceGroup-DEWC --query "[].[name,properties.runningState]"
+hey -n 1000 -c 1000 -m GET $(echo "https://$(az containerapp show -n hello-world-native -g DefaultResourceGroup-DEWC --query properties.configuration.ingress.fqdn --only-show-errors -o yaml)")
+
+```
+### Project CraC
+```
+az containerapp up --name hello-world-crac --image harbor.main.emea.end2end.link/going-serverless/hello-world-crac --ingress external --target-port 8080
+az containerapp logs show -n hello-world-crac -g DefaultResourceGroup-DEWC | grep "Spring-managed lifecycle restart completed"
+watch az containerapp replica list -n hello-world-crac -g DefaultResourceGroup-DEWC --query "[].[name,properties.runningState]"
+hey -n 1000 -c 1000 -m GET $(echo "https://$(az containerapp show -n hello-world-crac -g DefaultResourceGroup-DEWC --query properties.configuration.ingress.fqdn --only-show-errors -o yaml)")
+```
+### CDS
+```
+az containerapp up --name hello-world-cds --image harbor.main.emea.end2end.link/going-serverless/hello-world-cds --ingress external --target-port 8080
+az containerapp logs show -n hello-world-cds -g DefaultResourceGroup-DEWC | grep "Started HelloWorldApplication"
+watch az containerapp replica list -n hello-world-cds -g DefaultResourceGroup-DEWC --query "[].[name,properties.runningState]"
+hey -n 1000 -c 1000 -m GET $(echo "https://$(az containerapp show -n hello-world-cds -g DefaultResourceGroup-DEWC --query properties.configuration.ingress.fqdn --only-show-errors -o yaml)")
 ```
