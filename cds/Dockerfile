@@ -7,23 +7,15 @@ RUN ./gradlew assemble
 
 FROM azul/zulu-openjdk:17 as cds-archive
 
-ENV APP_JAR_FILE /opt/app/app.jar
-
-RUN apt-get update && apt-get install -y \
-         unzip
-
 RUN mkdir -p /opt/app
-COPY --from=builder build/libs/*.jar $APP_JAR_FILE
-COPY ./cds/cds.sh /opt/app/cds.sh
-COPY ./cds/unpack-executable-jar.sh /opt/app/unpack-executable-jar.sh
+COPY --from=builder build/libs/*.jar /opt/app/app.jar
 
-RUN /opt/app/cds.sh -b
+RUN (cd /opt/app && java -Djarmode=tools -jar app.jar extract)
+
+RUN java -Dspring.context.exit=onRefresh -XX:ArchiveClassesAtExit=/opt/app/app/app.jsa -jar /opt/app/app/app.jar
 
 FROM azul/zulu-openjdk:17
 
-ENV APP_JAR_FILE /opt/app/app.jar
+COPY --from=cds-archive /opt/app/app /opt/app/app
 
-COPY --from=cds-archive /opt/app/unpacked /opt/app/unpacked
-COPY --from=cds-archive /opt/app/cds.sh /opt/app/cds.sh
-
-ENTRYPOINT /opt/app/cds.sh -s
+ENTRYPOINT java $JAVA_OPTS -XX:SharedArchiveFile=/opt/app/app/app.jsa -jar /opt/app/app/app.jar

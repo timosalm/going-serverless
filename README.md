@@ -2,6 +2,8 @@
 
 [Session recording](https://www.youtube.com/watch?v=ZQ1Dr1v363Y)
 
+**Update:** Support for extracting an uber JAR to a CDS friendly layout was [added in Spring Boot 3.3.0 M3](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3.0-M3-Release-Notes#cds-support).
+
 ## Container image building
 
 ```
@@ -10,17 +12,16 @@ export REGISTRY_HOST=<your-registry-hostname>(/<project>)
 
 ### Without optimizations
 ```
-# Remove "org.graalvm.buildtools.native" plugin in build.gradle before running the command, otherwise, a native image will be built
 ./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
 ```
 
 ### GraalVM Native Image
+Uncomment "org.graalvm.buildtools.native" plugin in build.gradle before running the command.
 ```
 ./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
 ```
 
 ### Project CraC
-
 ```
 docker build . -t $REGISTRY_HOST/hello-world-crac:checkpointer --file crac/Dockerfile
 docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer $REGISTRY_HOST/hello-world-crac:checkpointer
