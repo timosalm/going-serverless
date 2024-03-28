@@ -1,13 +1,16 @@
+# Going Serverless With Spring’s Support for GraalVM, Project CraC & Class Data Sharing (CDS)
+
+[Session recording](https://www.youtube.com/watch?v=ZQ1Dr1v363Y)
 
 ## Container image building
 
 ```
-export REGISTRY_HOST=harbor.main.emea.end2end.link/going-serverless
+export REGISTRY_HOST=<your-registry-hostname>(/<project>)
 ```
 
 ### Without optimizations
 ```
-# Remove "org.graalvm.buildtools.native" plugin in build.gradle before running the command, otherwise a native image will be build
+# Remove "org.graalvm.buildtools.native" plugin in build.gradle before running the command, otherwise, a native image will be built
 ./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
 ```
 
