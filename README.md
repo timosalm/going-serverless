@@ -2,25 +2,31 @@
 
 [Session recording](https://www.youtube.com/watch?v=ZQ1Dr1v363Y)
 
+**Update:** Support for extracting an uber JAR to a CDS friendly layout was [added in Spring Boot 3.3.0 M3](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.3.0-M3-Release-Notes#cds-support). The demo code is updated.
+
+Special thanks to [Sébastien Deleuze](https://github.com/sdeleuze/), who is not only the lead for the topic in the Spring team but also wrote two great blog posts on it: [GraalVM, Project CRaC](https://spring.io/blog/2023/10/16/runtime-efficiency-with-spring
+), [CDS](https://spring.io/blog/2023/12/04/cds-with-spring-framework-6-1
+).
+
 ## Container image building
 
+*Hint: If you want to skip the container image building, you can use my images by running `export REGISTRY_HOST=harbor.main.emea.end2end.link/going-serverless`, and jump tp the "[Running the application on Knative](#running-the-application-on-knative)" section.*
 ```
 export REGISTRY_HOST=<your-registry-hostname>(/<project>)
 ```
 
 ### Without optimizations
 ```
-# Remove "org.graalvm.buildtools.native" plugin in build.gradle before running the command, otherwise, a native image will be built
 ./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
 ```
 
 ### GraalVM Native Image
+Uncomment "org.graalvm.buildtools.native" plugin in build.gradle before running the command.
 ```
 ./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
 ```
 
 ### Project CraC
-
 ```
 docker build . -t $REGISTRY_HOST/hello-world-crac:checkpointer --file crac/Dockerfile
 docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer $REGISTRY_HOST/hello-world-crac:checkpointer
