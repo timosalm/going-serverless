@@ -5,8 +5,7 @@
 **Update:** Support for extracting an uber JAR to a CDS friendly layout was [added in Spring Boot 3.3.0](https://docs.spring.io/spring-boot/reference/deployment/efficient.html#deployment.efficient.cds). The demo code is updated.
 
 Special thanks to [Sébastien Deleuze](https://github.com/sdeleuze/), who is not only the lead for the topic in the Spring team but also wrote two great blog posts on it: [GraalVM, Project CRaC](https://spring.io/blog/2023/10/16/runtime-efficiency-with-spring
-), [CDS](https://spring.io/blog/2023/12/04/cds-with-spring-framework-6-1
-).
+), [CDS](https://spring.io/blog/2023/12/04/cds-with-spring-framework-6-1).
 
 ## Container image building
 
