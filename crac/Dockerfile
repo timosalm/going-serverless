@@ -3,7 +3,7 @@ FROM azul/zulu-openjdk:21-jdk-crac as builder
 COPY ./build.gradle ./gradlew ./settings.gradle .
 COPY ./gradle ./gradle
 COPY ./src ./src
-RUN ./gradlew assemble
+RUN ./gradlew assemble -PbuildProfile=crac
 
 FROM azul/zulu-openjdk:21-jdk-crac
 

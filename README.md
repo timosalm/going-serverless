@@ -16,13 +16,15 @@ export REGISTRY_HOST=<your-registry-hostname>(/<project>)
 
 ### Without optimizations
 ```
-./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
+./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world
+docker push $REGISTRY_HOST/hello-world
 ```
 
 ### GraalVM Native Image
-Uncomment "org.graalvm.buildtools.native" plugin in build.gradle before running the command.
+The required "org.graalvm.buildtools.native" plugin in build.gradle will be enabled based on the custom "graalvm" profile
 ```
-./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world --publishImage
+./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world-native -PbuildProfile=graalvm
+docker push $REGISTRY_HOST/hello-world-native
 ```
 
 ### Project CraC
@@ -37,6 +39,16 @@ docker push $REGISTRY_HOST/hello-world-crac
 ```
 
 ### CDS
+
+#### Option 1 with Cloud Native Buildpack
+The required BP_JVM_CDS_ENABLED=true and BP_SPRING_AOT_ENABLED env variables for the Cloud Native Buildpack will be 
+enabled based on the custom "cds" profile in build.gradle.
+```
+./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world-native -PbuildProfile=cds
+docker push $REGISTRY_HOST/hello-world-cds
+```
+
+#### Option 2 with Dockerfile
 ```
 docker build . -t $REGISTRY_HOST/hello-world-cds --file cds/Dockerfile
 docker push $REGISTRY_HOST/hello-world-cds
@@ -52,6 +64,11 @@ kp image create hello-world --git https://github.com/timosalm/going-serverless -
 ### GraalVM Native Image
 ```
 kp image create hello-world-native --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world-native --env BP_JVM_VERSION=21 --env BP_NATIVE_IMAGE=true
+```
+
+### CDS
+```
+kp image create hello-world-native --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world-native --env BP_JVM_VERSION=21 --env BP_JVM_CDS_ENABLED=true --env BP_SPRING_AOT_ENABLED=true
 ```
 
 ## Running the application on Knative

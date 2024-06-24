@@ -3,7 +3,7 @@ plugins {
 
 	id 'org.springframework.boot' version '3.3.1' // SB 3.3 Adds support to unpack uber JARs to a CDS friendly layout
 	id 'io.spring.dependency-management' version '1.1.5'
-	// id 'org.graalvm.buildtools.native' version '0.10.2' // Uncomment for GraalVM Native Image
+	id 'org.graalvm.buildtools.native' version '0.10.2' apply false
 }
 
 group = 'com.example'
@@ -18,10 +18,19 @@ repositories {
 	maven { url 'https://repo.spring.io/milestone' }
 }
 
+def buildProfile = project.hasProperty('buildProfile') ? project.getProperty('buildProfile') : 'default'
+println "Build Profile: ${buildProfile}"
+
+if (buildProfile == 'graalvm') {
+	apply plugin: 'org.graalvm.buildtools.native'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.crac:crac'
+	if (buildProfile == 'crac') {
+		implementation 'org.crac:crac'
+	}
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -29,11 +38,16 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.named('jar') {
-	enabled = false // disable plain archive, otherwise native image build wild fail with "Error: /workspace is a directory. (-jar requires a valid jarfile)"
+if (buildProfile == 'graalvm') {
+	tasks.named('jar') {
+		enabled = false // disable plain archive, otherwise native image build wild fail with "Error: /workspace is a directory. (-jar requires a valid jarfile)"
+	}
 }
 
 tasks.named("bootBuildImage") {
 	environment["BP_JVM_VERSION"] = "21"
+	if (buildProfile == 'cds') {
+		environment["BP_JVM_CDS_ENABLED"] = "true"
+		environment["BP_SPRING_AOT_ENABLED"] = "true"
+	}
 }
-
