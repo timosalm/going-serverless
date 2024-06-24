@@ -46,12 +46,12 @@ docker push $REGISTRY_HOST/hello-world-cds
 
 ### Without optimizations
 ```
-kp image create hello-world --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world --env BP_JVM_VERSION=17
+kp image create hello-world --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world --env BP_JVM_VERSION=21
 ```
 
 ### GraalVM Native Image
 ```
-kp image create hello-world-native --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world-native --env BP_JVM_VERSION=17 --env BP_NATIVE_IMAGE=true
+kp image create hello-world-native --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world-native --env BP_JVM_VERSION=21 --env BP_NATIVE_IMAGE=true
 ```
 
 ## Running the application on Knative

@@ -1,11 +1,11 @@
-FROM azul/zulu-openjdk:17-jdk-crac as builder
+FROM azul/zulu-openjdk:21-jdk-crac as builder
 
 COPY ./build.gradle ./gradlew ./settings.gradle .
 COPY ./gradle ./gradle
 COPY ./src ./src
 RUN ./gradlew assemble
 
-FROM azul/zulu-openjdk:17-jdk-crac
+FROM azul/zulu-openjdk:21-jdk-crac
 
 RUN apt-get update && apt-get install -y \
          siege
