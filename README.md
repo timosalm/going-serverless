@@ -29,6 +29,7 @@ docker push $REGISTRY_HOST/hello-world-native
 
 ### Project CraC
 ```
+capsh --print # Check whether required capabilities are available
 docker build . -t $REGISTRY_HOST/hello-world-crac:checkpointer --file crac/Dockerfile
 docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer $REGISTRY_HOST/hello-world-crac:checkpointer
 # Wait until checkpoint creation succeeded: docker logs $(docker ps -qf "name=hello-world-crac-checkpointer") -f
