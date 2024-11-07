@@ -9,7 +9,7 @@ Special thanks to [Sébastien Deleuze](https://github.com/sdeleuze/), who is not
 
 ## Container image building
 
-*Hint: If you want to skip the container image building, you can use my images by running `export REGISTRY_HOST=harbor.main.emea.end2end.link/going-serverless`, and jump tp the "[Running the application on Knative](#running-the-application-on-knative)" section.*
+*Hint: If you want to skip the container image building, you can use my images by running `export REGISTRY_HOST=harbor.main.emea.end2end.link/going-serverless`, and jump to the "[Running the application on Knative](#running-the-application-on-knative)" section.*
 ```
 export REGISTRY_HOST=<your-registry-hostname>(/<project>)
 ```
