@@ -35,8 +35,8 @@ jobs:
         uses: actions/checkout@v4
 
       - run: |
-         docker build . -t "ghcr.io/${{ github.repository }}:hello-world-crac:checkpointer" --file crac/Dockerfile
-         docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer "ghcr.io/${{ github.repository }}:hello-world-crac:checkpointer"
+         docker build . -t "ghcr.io/${{ github.repository }}:hello-world-crac-checkpointer" --file crac/Dockerfile
+         docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer "ghcr.io/${{ github.repository }}:hello-world-crac-checkpointer"
          docker commit --change='ENTRYPOINT ["/opt/app/entrypoint.sh"]' $(docker ps -qf "name=hello-world-crac-checkpointer") "ghcr.io/${{ github.repository }}:hello-world-crac"
          docker kill $(docker ps -qf "name=hello-world-crac-checkpointer")
       - uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
