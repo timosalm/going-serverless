@@ -45,7 +45,7 @@ docker push $REGISTRY_HOST/hello-world-crac
 The required BP_JVM_CDS_ENABLED=true and BP_SPRING_AOT_ENABLED env variables for the Cloud Native Buildpack will be 
 enabled based on the custom "cds" profile in build.gradle.
 ```
-./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world-native -PbuildProfile=cds
+./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world-cds -PbuildProfile=cds
 docker push $REGISTRY_HOST/hello-world-cds
 ```
 
