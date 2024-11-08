@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:21-jdk-crac as builder
+FROM azul/zulu-openjdk:23-jdk-crac as builder
 
 COPY ./build.gradle ./gradlew ./settings.gradle .
 COPY ./gradle ./gradle
