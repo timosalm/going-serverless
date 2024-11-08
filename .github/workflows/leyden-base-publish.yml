@@ -45,8 +45,6 @@ jobs:
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          file: ./leyden/Dockerfile
+          file: ./leyden/leyden.Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}:hello-world-leyden
-
-
+          tags: ghcr.io/${{ github.repository }}:leyden-base
