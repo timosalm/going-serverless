@@ -5,7 +5,7 @@ COPY ./gradle ./gradle
 COPY ./src ./src
 RUN ./gradlew assemble -PbuildProfile=crac
 
-FROM azul/zulu-openjdk:21-jdk-crac
+FROM azul/zulu-openjdk:23-jdk-crac
 
 RUN apt-get update && apt-get install -y \
          siege
