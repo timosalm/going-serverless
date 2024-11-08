@@ -9,34 +9,34 @@ Special thanks to [Sébastien Deleuze](https://github.com/sdeleuze/), who is not
 
 ## Container image building
 
-*Hint: If you want to skip the container image building, you can use my images by running `export REGISTRY_HOST=harbor.main.emea.end2end.link/going-serverless`, and jump to the "[Running the application on Knative](#running-the-application-on-knative)" section.*
+*Hint: If you want to skip the container image building, you can use my images by running `export REGISTRY_HOST=ghcr.io/timosalm/going-serverless:`, and jump to the "[Running the application on Knative](#running-the-application-on-knative)" section.*
 ```
-export REGISTRY_HOST=<your-registry-hostname>(/<project>)
+export REGISTRY_HOST=<your-registry-hostname>(/<project>)/
 ```
 
 ### Without optimizations
 ```
-./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world
-docker push $REGISTRY_HOST/hello-world
+./gradlew bootBuildImage --imageName=${REGISTRY_HOST}hello-world
+docker push ${REGISTRY_HOST}hello-world
 ```
 
 ### GraalVM Native Image
 The required "org.graalvm.buildtools.native" plugin in build.gradle will be enabled based on the custom "graalvm" profile
 ```
-./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world-native -PbuildProfile=graalvm
-docker push $REGISTRY_HOST/hello-world-native
+./gradlew bootBuildImage --imageName=${REGISTRY_HOST}hello-world-native -PbuildProfile=graalvm
+docker push ${REGISTRY_HOST}hello-world-native
 ```
 
 ### Project CraC
 ```
 capsh --print # Check whether required capabilities are available
-docker build . -t $REGISTRY_HOST/hello-world-crac:checkpointer --file crac/Dockerfile
-docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer $REGISTRY_HOST/hello-world-crac:checkpointer
+docker build . -t ${REGISTRY_HOST}hello-world-crac:checkpointer --file crac/Dockerfile
+docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_PTRACE --rm --name hello-world-crac-checkpointer ${REGISTRY_HOST}hello-world-crac:checkpointer
 # Wait until checkpoint creation succeeded: docker logs $(docker ps -qf "name=hello-world-crac-checkpointer") -f
-docker commit --change='ENTRYPOINT ["/opt/app/entrypoint.sh"]' $(docker ps -qf "name=hello-world-crac-checkpointer") $REGISTRY_HOST/hello-world-crac
+docker commit --change='ENTRYPOINT ["/opt/app/entrypoint.sh"]' $(docker ps -qf "name=hello-world-crac-checkpointer") ${REGISTRY_HOST}hello-world-crac
 docker kill $(docker ps -qf "name=hello-world-crac-checkpointer")
-# Test: docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_ADMIN --rm -p 8080:8080 --name hello-world-crac-checkpoint $REGISTRY_HOST/hello-world-crac
-docker push $REGISTRY_HOST/hello-world-crac
+# Test: docker run -d --cap-add CHECKPOINT_RESTORE --cap-add SYS_ADMIN --rm -p 8080:8080 --name hello-world-crac-checkpoint ${REGISTRY_HOST}hello-world-crac
+docker push ${REGISTRY_HOST}hello-world-crac
 ```
 
 ### CDS
@@ -45,37 +45,20 @@ docker push $REGISTRY_HOST/hello-world-crac
 The required BP_JVM_CDS_ENABLED=true and BP_SPRING_AOT_ENABLED env variables for the Cloud Native Buildpack will be 
 enabled based on the custom "cds" profile in build.gradle.
 ```
-./gradlew bootBuildImage --imageName=$REGISTRY_HOST/hello-world-cds -PbuildProfile=cds
-docker push $REGISTRY_HOST/hello-world-cds
+./gradlew bootBuildImage --imageName=${REGISTRY_HOST}hello-world-cds -PbuildProfile=cds
+docker push ${REGISTRY_HOST}hello-world-cds
 ```
 
 #### Option 2 with Dockerfile
 ```
-docker build . -t $REGISTRY_HOST/hello-world-cds --file cds/Dockerfile
-docker push $REGISTRY_HOST/hello-world-cds
-```
-
-## Container image building with kpack
-
-### Without optimizations
-```
-kp image create hello-world --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world --env BP_JVM_VERSION=21
-```
-
-### GraalVM Native Image
-```
-kp image create hello-world-native --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world-native --env BP_JVM_VERSION=21 --env BP_NATIVE_IMAGE=true
-```
-
-### CDS
-```
-kp image create hello-world-native --git https://github.com/timosalm/going-serverless --tag $REGISTRY_HOST/hello-world-native --env BP_JVM_VERSION=21 --env BP_JVM_CDS_ENABLED=true --env BP_SPRING_AOT_ENABLED=true
+docker build . -t ${REGISTRY_HOST}hello-world-cds --file cds/Dockerfile
+docker push ${REGISTRY_HOST}hello-world-cds
 ```
 
 ## Running the application on Knative
 ### Without optimizations
 ```
-kn service create hello-world --image $REGISTRY_HOST/hello-world
+kn service create hello-world --image ${REGISTRY_HOST}hello-world
 kubectl logs -l app=hello-world-00001 -c user-container | grep "Started HelloWorldApplication"
 # Started HelloWorldApplication in 4.558 seconds (process running for 5.214)
 watch kubectl get pods
@@ -87,7 +70,7 @@ kubectl top pods -l app=hello-world-00001 --containers
 
 ### GraalVM Native Image
 ```
-kn service create hello-world-native --image $REGISTRY_HOST/hello-world-native
+kn service create hello-world-native --image ${REGISTRY_HOST}hello-world-native
 kubectl logs -l app=hello-world-native-00001 -c user-container | grep "Started HelloWorldApplication"
 # Started HelloWorldApplication in 0.238 seconds (process running for 0.247)
 watch kubectl get pods
@@ -111,7 +94,7 @@ kubectl top pods -l app=hello-world-crac-00001 --containers
 
 ### CDS
 ```
-kn service create hello-world-cds --image $REGISTRY_HOST/hello-world-cds
+kn service create hello-world-cds --image ${REGISTRY_HOST}hello-world-cds
 kubectl logs -l app=hello-world-cds-00001 -c user-container | grep "Started HelloWorldApplication"
 # Started HelloWorldApplication in 2.769 seconds
 watch kubectl get pods
