@@ -9,9 +9,11 @@ RUN apt-get update && apt-get install -y wget tar && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p "$JAVA_HOME" && wget -qO- "$JDK_URL" | tar -xz --strip-components=1 -C "$JAVA_HOME"
 
 RUN mkdir -p build
+RUN ls
 COPY build.gradle gradlew settings.gradle build/
 COPY gradle build/gradle
 COPY ./src build/src
+RUN ls build/
 RUN ./build/gradlew assemble
 
 COPY ./leyden/unpack-executable-jar.sh ./unpack-executable-jar.sh
