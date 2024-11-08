@@ -19,4 +19,4 @@ cd leyden
 
 bash configure --with-boot-jdk=/opt/boot-jdk
 make images
-mv /opt/leyden/buildlinux-x86_64-server-release/images/jdk /opt
+mv /opt/leyden/build/linux-x86_64-server-release/images/jdk /opt
