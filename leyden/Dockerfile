@@ -1,17 +1,14 @@
 FROM ghcr.io/timosalm/going-serverless:leyden-base as builder
 
-COPY ./build.gradle ./gradlew ./settings.gradle .
-COPY ./gradle ./gradle
+COPY ./leyden/mvnw ./leyden/pom.xml ./
+COPY ./leyden/.mvn ./.mvn
 COPY ./src ./src
-RUN ./gradlew assemble
+RUN ./mvnw package
 
-COPY ./leyden/unpack-executable-jar.sh ./unpack-executable-jar.sh
-RUN ./unpack-executable-jar.sh -d build-unpacked build/build/libs/hello-world-0.0.1-SNAPSHOT.jar
-RUN rm -rf build unpack-executable-jar.sh
+RUN java -Djarmode=tools -jar target/hello-world-0.0.1-SNAPSHOT.jar extract --destination build-unpacked
 RUN java -Dspring.aot.enabled=true -Dspring.context.exit=onRefresh -XX:CacheDataStore=build-unpacked/application.cds -jar build-unpacked/run-app.jar
 
 FROM ghcr.io/timosalm/going-serverless:leyden-base
-
 
 ENV APP_JAR_FILE /opt/app/
 
